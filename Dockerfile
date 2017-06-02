@@ -7,3 +7,8 @@ RUN sed -i "s|^compaction_throughput_mb_per_sec:.*$|compaction_throughput_mb_per
 
 # Increase the number of cores doing compaction
 RUN sed -i "s|.*concurrent_compactors:.*$|concurrent_compactors: 2|" "$CASSANDRA_CONFIG/cassandra.yaml"
+
+# Change permissions on cassandra logfile
+RUN touch /var/log/cassandra/system.log && \
+    chmod 700 /var/log/cassandra && \
+    chmod 600 /var/log/cassandra/system.log
