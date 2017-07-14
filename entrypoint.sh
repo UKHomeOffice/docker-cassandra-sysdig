@@ -33,10 +33,10 @@ fi
 # Enable tls on cassandra intra node communication
 if [ "$CASSANDRA_TLS" == "true" ] && [ -e ${CASSANDRA_KEYSTORE} ] && [ ! -z ${CASSANDRA_KEYSTORE_PASSWORD} ] && [ -e ${CASSANDRA_TRUSTSTORE} ] && [ ! -z ${CASSANDRA_TRUSTSTORE_PASSWORD} ]; then
     sed -i "s|internode_encryption:.*$|internode_encryption: all|" "$CASSANDRA_CONFIG/cassandra.yaml"
-    sed -i "s|keystore:.*$|keystore: ${CASSANDRA_KEYSTORE}|" "$CASSANDRA_CONFIG/cassandra.yaml"
-    sed -i "s|keystore_password:.*$|keystore_password: ${CASSANDRA_KEYSTORE_PASSWORD}|" "$CASSANDRA_CONFIG/cassandra.yaml"
-    sed -i "s|truststore:.*$|truststore: ${CASSANDRA_TRUSTSTORE}|" "$CASSANDRA_CONFIG/cassandra.yaml"
-    sed -i "s|truststore_password:.*$|truststore_password: ${CASSANDRA_TRUSTSTORE_PASSWORD}|" "$CASSANDRA_CONFIG/cassandra.yaml"
+    sed -i "0,/keystore:.*$/ s|keystore:.*$|keystore: ${CASSANDRA_KEYSTORE}|" "$CASSANDRA_CONFIG/cassandra.yaml"
+    sed -i "0,/keystore_password:.*$/ s|keystore_password:.*$|keystore_password: ${CASSANDRA_KEYSTORE_PASSWORD}|" "$CASSANDRA_CONFIG/cassandra.yaml"
+    sed -i "0,/truststore:.*$/ s|truststore:.*$|truststore: ${CASSANDRA_TRUSTSTORE}|" "$CASSANDRA_CONFIG/cassandra.yaml"
+    sed -i "0,/truststore_password:.*$/ s|truststore_password:.*$|truststore_password: ${CASSANDRA_TRUSTSTORE_PASSWORD}|" "$CASSANDRA_CONFIG/cassandra.yaml"
 fi
 
 /docker-entrypoint.sh "$@"
