@@ -12,3 +12,12 @@ RUN sed -i "s|.*concurrent_compactors:.*$|concurrent_compactors: 2|" "$CASSANDRA
 RUN touch /var/log/cassandra/system.log && \
     chmod 700 /var/log/cassandra && \
     chmod 600 /var/log/cassandra/system.log
+
+COPY entrypoint.sh /entrypoint.sh
+
+ENV CASSANDRA_KEYSTORE=/certs/keystore.jks \
+    CASSANDRA_KEYSTORE_PASSWORD=cassandra \
+    CASSANDRA_TRUSTSTORE=/ca/truststore.jks \
+    CASSANDRA_TRUSTSTORE_PASSWORD=cassandra
+
+ENTRYPOINT [ "/entrypoint.sh", "cassandra",  "-f" ]
