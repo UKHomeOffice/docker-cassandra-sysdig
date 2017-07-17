@@ -37,6 +37,7 @@ if [ "$CASSANDRA_TLS" == "true" ] && [ -e ${CASSANDRA_KEYSTORE} ] && [ ! -z ${CA
     sed -i "0,/keystore_password:.*$/ s|keystore_password:.*$|keystore_password: ${CASSANDRA_KEYSTORE_PASSWORD}|" "$CASSANDRA_CONFIG/cassandra.yaml"
     sed -i "0,/truststore:.*$/ s|truststore:.*$|truststore: ${CASSANDRA_TRUSTSTORE}|" "$CASSANDRA_CONFIG/cassandra.yaml"
     sed -i "0,/truststore_password:.*$/ s|truststore_password:.*$|truststore_password: ${CASSANDRA_TRUSTSTORE_PASSWORD}|" "$CASSANDRA_CONFIG/cassandra.yaml"
+    sed -i "0,/cipher_suites:.*$/ s|cipher_suites:.*$|cipher_suites: TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA|" "$CASSANDRA_CONFIG/cassandra.yaml"
 fi
 
 /docker-entrypoint.sh "$@"
