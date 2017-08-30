@@ -1,9 +1,9 @@
 FROM quay.io/sysdig/cassandra:2.1.15.0
 
-# Don't upgrade cassandra
-RUN apt-mark hold cassandra
-
-RUN apt-get update && apt-get upgrade -y
+# # Don't upgrade cassandra
+# RUN apt-mark hold cassandra
+#
+# RUN apt-get update && apt-get upgrade -y
 
 # Chagne cassandra compaction throughput to unlimited
 RUN sed -i "s|^compaction_throughput_mb_per_sec:.*$|compaction_throughput_mb_per_sec: 0|" "$CASSANDRA_CONFIG/cassandra.yaml"
