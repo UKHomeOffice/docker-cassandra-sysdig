@@ -1,5 +1,8 @@
 FROM quay.io/sysdig/cassandra:2.1.15.0
 
+# Don't upgrade cassandra
+RUN apt-mark hold cassandra
+
 RUN apt-get update && apt-get upgrade -y
 
 # Chagne cassandra compaction throughput to unlimited
