@@ -1,40 +1,40 @@
 ---
 pipeline:
   build_image:
-    privileged: true
-    image: docker:1.13
+    image: docker:17.09.0-ce
+    secrets:
+      - docker_sysdig_token
     environment:
-      - DOCKER_HOST=tcp://127.0.0.1:2375
+      - DOCKER_HOST=tcp://172.17.0.1:2375
     commands:
-      - docker login -u="sysdig+homeoffice" -p=${DOCKER_SYSDIG_TOKEN} quay.io
-      - docker build -t cassandra-sysdig .
-
+      - docker login -u="sysdig+homeoffice" -p=$${DOCKER_SYSDIG_TOKEN} quay.io
+      - docker build -t cassandra-sysdig:$${DRONE_COMMIT_SHA} .
+ 
   image_to_repo:
-    commands:
-      - docker login -u="sysdig_drone" -p=${DOCKER_PASSWORD} docker.digital.homeoffice.gov.uk
-      - docker tag cassandra-sysdig docker.digital.homeoffice.gov.uk/cassandra-sysdig:latest
-      - docker push docker.digital.homeoffice.gov.uk/cassandra-sysdig:latest
+    image: docker:17.09.0-ce
+    secrets:
+      - docker_password
     environment:
-      - "DOCKER_HOST=tcp://127.0.0.1:2375"
-    image: docker:1.13
+      - DOCKER_HOST=tcp://172.17.0.1:2375
+    commands:
+      - docker login -u="sysdig_drone" -p=$${DOCKER_PASSWORD} docker.digital.homeoffice.gov.uk
+      - docker tag cassandra-sysdig:$${DRONE_COMMIT_SHA} docker.digital.homeoffice.gov.uk/cassandra-sysdig:$${DRONE_COMMIT_SHA}
+      - docker tag cassandra-sysdig:$${DRONE_COMMIT_SHA} docker.digital.homeoffice.gov.uk/cassandra-sysdig:latest
+      - docker push docker.digital.homeoffice.gov.uk/cassandra-sysdig:$${DRONE_COMMIT_SHA}
+      - docker push docker.digital.homeoffice.gov.uk/cassandra-sysdig:latest
     when:
       event: push
+      branch: master
 
   image_to_repo_on_tag:
-    commands:
-      - docker login -u="sysdig_drone" -p=${DOCKER_PASSWORD} docker.digital.homeoffice.gov.uk
-      - docker tag cassandra-sysdig docker.digital.homeoffice.gov.uk/cassandra-sysdig:${DRONE_TAG}
-      - docker push docker.digital.homeoffice.gov.uk/cassandra-sysdig:${DRONE_TAG}
+    image: docker:17.09.0-ce
+    secrets:
+      - docker_password
     environment:
-      - "DOCKER_HOST=tcp://127.0.0.1:2375"
-    image: docker:1.13
+      - DOCKER_HOST=tcp://172.17.0.1:2375
+    commands:
+      - docker login -u="sysdig_drone" -p=$${DOCKER_PASSWORD} docker.digital.homeoffice.gov.uk
+      - docker tag cassandra-sysdig:$${DRONE_COMMIT_SHA} docker.digital.homeoffice.gov.uk/cassandra-sysdig:$${DRONE_TAG}
+      - docker push docker.digital.homeoffice.gov.uk/cassandra-sysdig:$${DRONE_TAG}
     when:
       event: tag
-
-services:
-  dind:
-    image: docker:1.13-dind
-    privileged: true
-    command:
-      - "-s"
-      - "overlay"
