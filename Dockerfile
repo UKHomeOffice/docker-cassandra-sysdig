@@ -1,4 +1,4 @@
-FROM quay.io/sysdig/cassandra:2.1.20.3
+FROM quay.io/sysdig/cassandra:2.1.20.5
 
 RUN apt-get update && apt-get upgrade -y
 
